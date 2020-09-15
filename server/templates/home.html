@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% for post in post_obj %}
+        {% if post != None %}
+        <div class="card mb-4 homecard">
+            <div class="card-body">
+                <h2 class="card-title" ><a href="{{ url_for('post_detail', pk=post.pk) }}">{{ post.title|replace('"', "") }}</a></h2>
+                <p class="card-text">{{ post.content|replace('"', "")|truncate(20, True) }}</p>
+            </div>
+            <div class="card-footer text-muted">
+                By
+                <a href="{{ url_for('user_posts', author=post.author) }}"> {{ post.author|replace('"', "") }}</a>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

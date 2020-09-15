@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+
+     <div class="col">
+         <a type="button" class="btn btn-primary mb-3"  href="{{ url_for('home_page') }}">Home</a>
+        <legend class="border-bottom"></legend>
+         <h4 class="text-muted">{{ author.first_name|replace('"', "") }} {{ author.last_name|replace('"', "") }}'s Posts</h4>
+        <legend class="border-bottom"></legend>
+
+    {% for post in post_obj %}
+        {% if post != None %}
+        <div class="card mb-4 homecard">
+            <div class="card-body">
+                <h2 class="card-title"><a href="{{ url_for('post_detail', pk=post.pk) }}">{{ post.title|replace('"', "") }}</a>
+                </h2>
+                <p class="card-text">{{ post.content|replace('"', "")|truncate(20, True) }}</p>
+            </div>
+
+        </div>
+        {% endif %}
+    {% endfor %}
+     </div>
+</div>
+{% endblock %}

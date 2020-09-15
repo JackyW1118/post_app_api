@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<a type="button" class="btn btn-primary mb-3"  href="{{ url_for('home_page') }}">Home</a>
+
+<div class="card mb-4 homecard">
+    <div class="card-body">
+        <div class="text-muted">
+            By
+            <a href="{{ url_for('user_posts', author=post_obj.author) }}"> {{ post_obj.author|replace('"', "") }}</a>
+        </div>
+        <legend class="border-bottom mt-3"></legend>
+        <h2 class="card-title">{{ post_obj.title|replace('"', "") }}</h2>
+        <p class="card-text">{{ post_obj.content|replace('"', "")}}</p>
+    </div>
+</div>
+{% endblock %}
