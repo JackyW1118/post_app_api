@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+    <input class="form-control mb-4" type="text" placeholder="Search" aria-label="Search">
     {% for post in post_obj %}
         {% if post != None %}
         <div class="card mb-4 homecard">
