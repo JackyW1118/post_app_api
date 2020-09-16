@@ -5,12 +5,11 @@
 <div class="card mb-4 homecard">
     <div class="card-body">
         <div class="text-muted">
-            By
-            <a href="{{ url_for('user_posts', author=post_obj.author) }}"> {{ post_obj.author|replace('"', "") }}</a>
+            <a class = "p-size" href="{{ url_for('user_posts', author=post_obj.author) }}"> {{ post_obj.author|replace('"', "") }}</a>
         </div>
         <legend class="border-bottom mt-3"></legend>
-        <h2 class="card-title">{{ post_obj.title|replace('"', "") }}</h2>
-        <p class="card-text">{{ post_obj.content|replace('"', "")}}</p>
+        <h2 class="card-title h-size">{{ post_obj.title|replace('"', "") }}</h2>
+        <p class="card-text p-size">{{ post_obj.content|replace('"', "")}}</p>
     </div>
 </div>
 {% endblock %}
