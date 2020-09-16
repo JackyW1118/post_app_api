@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-    <input class="form-control mb-4" type="text" placeholder="Search" aria-label="Search">
+    <input class="form-control mb-4" onkeyup="livesearch(this.value)"  type="text" placeholder="Search Posts" aria-label="Search">
+    <p class = "p-size" id = "not_found" style = "display:none">No Post Found</p>
     {% for post in post_obj %}
         {% if post != None %}
         <div class="card mb-4 homecard">
@@ -15,4 +16,23 @@
         </div>
         {% endif %}
     {% endfor %}
+
+
+<script>
+    function livesearch(name){
+    $('.homecard').each(function() {
+        post_name = $(this).children().children('h2').text()
+        if(post_name.toLowerCase().includes(name.toLowerCase())){
+            $(this).show();
+        }else{
+            $(this).hide();
+        }
+    });
+    if($(".homecard:visible").length==0){
+       $("#not_found").show();
+    }else{
+        $("#not_found").hide();
+    }
+ }
+</script>
 {% endblock %}

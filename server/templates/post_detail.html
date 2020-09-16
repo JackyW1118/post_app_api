@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<a type="button" class="btn btn-primary mb-3"  href="{{ url_for('home_page') }}">Home</a>
-
+<a type="button" class="btn btn-primary mb-3" href="{{ url_for('home_page') }}">Home</a>
 <div class="card mb-4 homecard">
     <div class="card-body">
         <div class="text-muted">
@@ -12,4 +11,5 @@
         <p class="card-text p-size">{{ post_obj.content|replace('"', "")}}</p>
     </div>
 </div>
+
 {% endblock %}
