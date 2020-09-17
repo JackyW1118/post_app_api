@@ -9,3 +9,12 @@
 .p-size{
     font-size:13px;
 }
+.btn-vote{
+    color:black;
+    background-color:white;
+}
+
+.vote-count:focus {
+  outline: none;
+  box-shadow: none;
+}

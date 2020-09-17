@@ -4,12 +4,31 @@
 <div class="card mb-4 homecard">
     <div class="card-body">
         <div class="text-muted">
-            <a class = "p-size" href="{{ url_for('user_posts', author=post_obj.author) }}"> {{ post_obj.author|replace('"', "") }}</a>
+            <a class="p-size" href="{{ url_for('user_posts', author=post_obj.author) }}"> {{
+                post_obj.author|replace('"', "") }}</a>
         </div>
         <legend class="border-bottom mt-3"></legend>
         <h2 class="card-title h-size">{{ post_obj.title|replace('"', "") }}</h2>
         <p class="card-text p-size">{{ post_obj.content|replace('"', "")}}</p>
+        <legend class="border-bottom mt-3"></legend>
+        <div class="row">
+            <div class="col-xs-4">
+                <button id="upvote" name="button" class="btn btn-vote" onclick="upVote()">↑</button>
+                <button id="votecount" name="button" class="btn vote-count">VOTECOUNT</button>
+                <button id="downvote" name="button" class="btn btn-vote" onclick="downVote()">↓</button>
+            </div>
+        </div>
     </div>
 </div>
 
+<script>
+  function upVote(){
+   var pk = "{{ post_obj.pk }}"
+   $.ajax({url: "/posts/"+ pk +"/upvote"});
+   }
+   function downVote(){
+   var pk = "{{ post_obj.pk }}"
+   $.ajax({url: "/posts/"+ pk +"/downvote"});
+   }
+</script>
 {% endblock %}

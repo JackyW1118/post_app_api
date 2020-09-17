@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
@@ -36,6 +36,25 @@ def getPostObjWithPk(pk):
 def getAuthorObjWithUsername(username):
     return root.child("post_app").child("post_app").child("users").child(str(username)).get()
 
+def upVotePostWithPk(pk):
+    currentVal =  int(root.child("post_app").child("post_app").child("post").child(str(pk)).child("votes").get())
+    newObj = getPostObjWithPk(pk)
+
+    if not currentVal:
+        newObj["votes"]="1"
+    else:
+        newObj["votes"] = str(currentVal+1)
+    root.child("post_app").child("post_app").child("post").child(str(pk)).set(newObj)
+
+def downVotePostWithPk(pk):
+    currentVal =  int(root.child("post_app").child("post_app").child("post").child(str(pk)).child("votes").get())
+    newObj = getPostObjWithPk(pk)
+
+    if not currentVal:
+        newObj["votes"]="-1"
+    else:
+        newObj["votes"] = str(currentVal-1)
+    root.child("post_app").child("post_app").child("post").child(str(pk)).set(newObj)
 
 @app.route('/')
 def home_page():
@@ -46,6 +65,16 @@ def home_page():
 def post_detail(pk=None):
     data = getPostObjWithPk(pk)
     return render_template('post_detail.html', post_obj=data)
+
+@app.route('/posts/<pk>/upvote')
+def upvote_post(pk=None):
+    upVotePostWithPk(pk)
+    return redirect(url_for('home_page'))
+
+@app.route('/posts/<pk>/downvote')
+def downvote(pk=None):
+    downVotePostWithPk(pk)
+    return redirect(url_for('home_page'))
 
 @app.route('/<author>')
 def user_posts(author=None):
@@ -60,4 +89,4 @@ def user_posts(author=None):
 
 
 if __name__ == '__main__':
-    print(getAuthorObjWithUsername('jackyw118'))
+    print(downVotePostWithPk(2))
