@@ -69,12 +69,12 @@ def post_detail(pk=None):
 @app.route('/posts/<pk>/upvote')
 def upvote_post(pk=None):
     upVotePostWithPk(pk)
-    return redirect(url_for('home_page'))
+    return "done"
 
 @app.route('/posts/<pk>/downvote')
 def downvote(pk=None):
     downVotePostWithPk(pk)
-    return redirect(url_for('home_page'))
+    return "done"
 
 @app.route('/<author>')
 def user_posts(author=None):
@@ -87,6 +87,9 @@ def user_posts(author=None):
     print(post_obj)
     return render_template('user_posts.html',post_obj=post_obj,author=getAuthorObjWithUsername(author))
 
+@app.route('/posts/<pk>/votes')
+def getVoteWithPk(pk=None):
+    return getPostObjWithPk(pk)["votes"]
 
 if __name__ == '__main__':
-    print(downVotePostWithPk(2))
+    print(getVoteWithPk(2))

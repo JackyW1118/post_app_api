@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-xs-4">
                 <button id="upvote" name="button" class="btn btn-vote" onclick="upVote()">↑</button>
-                <button id="votecount" name="button" class="btn vote-count">VOTECOUNT</button>
+                <button id="votecount" name="button" class="btn vote-count"></button>
                 <button id="downvote" name="button" class="btn btn-vote" onclick="downVote()">↓</button>
             </div>
         </div>
@@ -23,12 +23,70 @@
 
 <script>
   function upVote(){
-   var pk = "{{ post_obj.pk }}"
-   $.ajax({url: "/posts/"+ pk +"/upvote"});
+        if(voted()){
+            alert("You already voted!")
+            return;
+        }
+       var pk = "{{ post_obj.pk }}"
+       $.ajax({url: "/posts/"+ pk +"/upvote", success:
+            function (result) {
+                getVote()
+                var stored = JSON.parse(localStorage.getItem("voted") || "null")
+                if(!stored){
+                    localStorage.setItem("voted",JSON.stringify([pk]))
+                }else{
+                    stored.push(pk)
+                    localStorage.setItem("voted",JSON.stringify(stored))
+                }
+                console.log(localStorage.getItem("voted"))
+         }
+      });
    }
    function downVote(){
-   var pk = "{{ post_obj.pk }}"
-   $.ajax({url: "/posts/"+ pk +"/downvote"});
+      if(voted()){
+        alert("You already voted!")
+        return;
+        }
+        var pk = "{{ post_obj.pk }}"
+        $.ajax({url: "/posts/"+ pk +"/downvote",success:
+            function (result) {
+                getVote()
+                var stored = JSON.parse(localStorage.getItem("voted") || "null")
+
+                if(!stored){
+                    localStorage.setItem("voted",JSON.stringify([pk]))
+                }else{
+                    stored.push(pk)
+                    localStorage.setItem("voted",JSON.stringify(stored))
+                }
+                console.log(localStorage.getItem("voted"))
+            }
+        });
    }
+   function getVote(){
+    var pk = "{{ post_obj.pk }}"
+         $.ajax({
+            url:  "/posts/"+ pk +"/votes",
+            success: function (result) {
+                $("#votecount").text(result)
+            }
+        })
+   }
+
+   function voted(){
+       var pk = "{{ post_obj.pk }}"
+        var stored = JSON.parse(localStorage.getItem("voted") || "null")
+        if (stored){
+            for (var i = 0; i < stored.length; i++){
+                if (stored[i]==pk){
+                    return true;
+                }
+            }
+        }
+        return false;
+   }
+   $(document).ready(function(){
+       getVote()
+    });
 </script>
 {% endblock %}
