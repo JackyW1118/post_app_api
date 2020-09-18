@@ -56,6 +56,10 @@ def downVotePostWithPk(pk):
         newObj["votes"] = str(currentVal-1)
     root.child("post_app").child("post_app").child("post").child(str(pk)).set(newObj)
 
+def sortPostsByVote():
+    return sorted([x for x in getObject() if x is not None], key=lambda k: int(k['votes']),reverse=True)
+
+
 @app.route('/')
 def home_page():
     data  = getObject()
@@ -92,4 +96,4 @@ def getVoteWithPk(pk=None):
     return getPostObjWithPk(pk)["votes"]
 
 if __name__ == '__main__':
-    print(getVoteWithPk(2))
+    print(sortPostsByVote())
