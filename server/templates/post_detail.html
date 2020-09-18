@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<a type="button" class="btn mb-3" onclick="window.history.back();">Back</a>
+<nav class="navbar nav-color sticky-top">
+    <a class="navbar-brand nav-text-color" href="#" onclick="window.history.back();">Back</a>
+</nav>
+<div class="container-fluid mt-3">
 <div class="card mb-4 homecard">
     <div class="card-body">
         <div class="text-muted">
@@ -20,7 +23,7 @@
         </div>
     </div>
 </div>
-
+</div>
 <script>
   function upVote(){
 

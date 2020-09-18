@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
+<nav class="navbar nav-color sticky-top">
+    <a class="navbar-brand nav-text-color" href="#" onclick="window.history.back();">Back</a>
+</nav>
+<div class="container-fluid mt-2">
 <div class="row">
 
      <div class="col">
-        <a type="button" class="btn mb-3" onclick="window.history.back();">Back</a>
         <legend class="border-bottom"></legend>
          <h4 class="text-muted">{{ author.first_name|replace('"', "") }} {{ author.last_name|replace('"', "") }}'s Posts</h4>
         <legend class="border-bottom"></legend>
@@ -21,5 +24,6 @@
         {% endif %}
     {% endfor %}
      </div>
+</div>
 </div>
 {% endblock %}

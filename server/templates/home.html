@@ -1,21 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
-    <input class="form-control mb-4" onkeyup="livesearch(this.value)"  type="text" placeholder="Search Posts" aria-label="Search">
-    <p class = "p-size" id = "not_found" style = "display:none">No Post Found</p>
+<nav class="navbar nav-color sticky-top">
+    <a class="navbar-brand nav-text-color" href="#">App Title</a>
+    <button type="button" class="btn nav-color nav-text-color">About</button>
+</nav>
+<div class="container-fluid">
+    <input class="form-control mb-4 mt-3" onkeyup="livesearch(this.value)" type="text" placeholder="Search Posts"
+           aria-label="Search">
+    <p class="p-size" id="not_found" style="display:none">No Post Found</p>
     {% for post in post_obj %}
-        {% if post != None %}
-        <div class="card mb-4 homecard">
-            <div class="card-body">
-                <h2 class="card-title h-size" ><a href="{{ url_for('post_detail', pk=post.pk) }}">{{ post.title|replace('"', "") }}</a></h2>
-                <p class="card-text p-size">{{ post.content|replace('"', "")|truncate(20, True) }}</p>
-            </div>
-            <div class="card-footer text-muted p-size">
-                By
-                <a class = "p-size" href="{{ url_for('user_posts', author=post.author) }}"> {{ post.author|replace('"', "") }}</a>
-            </div>
+    {% if post != None %}
+    <div class="card mb-4 homecard">
+        <div class="card-body">
+            <h2 class="card-title h-size"><a href="{{ url_for('post_detail', pk=post.pk) }}">{{ post.title|replace('"',
+                "")
+                }}</a></h2>
+            <p class="card-text p-size">{{ post.content|replace('"', "")|truncate(20, True) }}</p>
         </div>
-        {% endif %}
+        <div class="card-footer text-muted p-size">
+            By
+            <a class="p-size" href="{{ url_for('user_posts', author=post.author) }}"> {{ post.author|replace('"', "")
+                }}</a>
+        </div>
+    </div>
+    {% endif %}
     {% endfor %}
+
+</div>
 
 
 <script>
@@ -34,5 +45,8 @@
         $("#not_found").hide();
     }
  }
+
+
+
 </script>
 {% endblock %}
