@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<a type="button" class="btn btn-primary mb-3" href="{{ url_for('home_page') }}">Home</a>
+<a type="button" class="btn mb-3" onclick="window.history.back();">Back</a>
 <div class="card mb-4 homecard">
     <div class="card-body">
         <div class="text-muted">
@@ -40,7 +40,7 @@
       });
    }
    function downVote(){
-      
+
         var pk = "{{ post_obj.pk }}"
         $.ajax({url: "/posts/"+ pk +"/downvote",success:
             function (result) {
