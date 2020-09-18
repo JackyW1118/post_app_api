@@ -23,10 +23,7 @@
 
 <script>
   function upVote(){
-        if(voted()){
-            alert("You already voted!")
-            return;
-        }
+
        var pk = "{{ post_obj.pk }}"
        $.ajax({url: "/posts/"+ pk +"/upvote", success:
             function (result) {
@@ -43,10 +40,7 @@
       });
    }
    function downVote(){
-      if(voted()){
-        alert("You already voted!")
-        return;
-        }
+      
         var pk = "{{ post_obj.pk }}"
         $.ajax({url: "/posts/"+ pk +"/downvote",success:
             function (result) {
