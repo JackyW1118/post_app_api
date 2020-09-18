@@ -3,18 +3,20 @@
 <nav class="navbar nav-color sticky-top">
     <a class="navbar-brand nav-text-color" href="#" onclick="window.history.back();">Back</a>
 </nav>
-<div class="container-fluid mt-3">
-<div class="card mb-4 homecard">
+<div class="container-fluid mt-3 full-width">
+<div class="card mb-4 homecard full-width">
     <div class="card-body">
         <div class="text-muted">
             <a class="p-size" href="{{ url_for('user_posts', author=post_obj.author) }}"> {{
                 post_obj.author|replace('"', "") }}</a>
         </div>
-        <legend class="border-bottom mt-3"></legend>
-        <h2 class="card-title h-size">{{ post_obj.title|replace('"', "") }}</h2>
-        <p class="card-text p-size">{{ post_obj.content|replace('"', "")}}</p>
-        <legend class="border-bottom mt-3"></legend>
+        <div class = "post-content">
+            <legend class="border-bottom mt-3"></legend>
+            <h2 class="card-title h-size">{{ post_obj.title|replace('"', "") }}</h2>
+            <p class="card-text p-size">{{ post_obj.content|replace('"', "")}}</p>
+        </div>
         <div class="row">
+            <legend class="border-bottom mt-3"></legend>
             <div class="col-xs-4">
                 <button id="upvote" name="button" class="btn btn-vote" onclick="upVote()">↑</button>
                 <button id="votecount" name="button" class="btn vote-count"></button>
