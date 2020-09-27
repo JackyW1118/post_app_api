@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, jsonify
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
@@ -56,14 +56,28 @@ def downVotePostWithPk(pk):
         newObj["votes"] = str(currentVal-1)
     root.child("post_app").child("post_app").child("post").child(str(pk)).set(newObj)
 
-def sortPostsByVote():
-    return sorted([x for x in getObject() if x is not None], key=lambda k: int(k['votes']),reverse=True)
+def sortPostsByVote(descend):
+    if descend ==0: #latest first
+        return list(reversed(getObject()))
+    elif descend == 1: #popular first
+        descend = True
+    elif descend == 2:#latest last
+        return getObject()
+    else: #popular last
+        descend = False
+    return sorted([x for x in getObject() if x is not None], key=lambda k: int(k['votes']),reverse=descend)
 
+def getCategoryNames():
+    return list(root.child("post_app").child("post_app").child("category").get().keys())
 
 @app.route('/')
 def home_page():
     data  = getObject()
-    return render_template('home.html',post_obj=data )
+    return render_template('home.html',post_obj=data ,categories=getCategoryNames())
+
+@app.route('/all/<order>')
+def allPosts(order=0):
+    return jsonify(sortPostsByVote(int(order)))
 
 @app.route('/posts/<pk>')
 def post_detail(pk=None):
@@ -80,7 +94,7 @@ def downvote(pk=None):
     downVotePostWithPk(pk)
     return "done"
 
-@app.route('/<author>')
+@app.route('/author/<author>')
 def user_posts(author=None):
     author=author.replace('"','')
     post_obj=[]
@@ -95,5 +109,6 @@ def user_posts(author=None):
 def getVoteWithPk(pk=None):
     return getPostObjWithPk(pk)["votes"]
 
+
 if __name__ == '__main__':
-    print(sortPostsByVote())
+    print(sortPostsByVote(1))

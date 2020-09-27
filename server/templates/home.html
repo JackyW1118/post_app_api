@@ -5,26 +5,27 @@
     <button type="button" class="btn nav-color nav-text-color">About</button>
 </nav>
 <div class="container-fluid">
-    <input class="form-control mb-4 mt-3" onkeyup="livesearch(this.value)" type="text" placeholder="Search Posts"
-           aria-label="Search">
+    <table class="mb-3 mt-2" style="width:100%;">
+        <th class="">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" style="background:#3295FE;" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Latest
+              </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#" onclick="renderPosts(0)">Latest</a>
+                        <a class="dropdown-item" href="#" onclick="renderPosts(2)">Oldest</a>
+                        <a class="dropdown-item" href="#" onclick="renderPosts(1)">Most Popular</a>
+                        <a class="dropdown-item" href="#" onclick="renderPosts(3)">Least Popular</a>                     
+                  </div>
+            </div>
+        </th>
+        <th class="" style="width:50%;">
+            <input class="form-control" onkeyup="livesearch(this.value)" type="text" placeholder="Search Posts" aria-label="Search">
+        </th>
+    </table>
+
     <p class="p-size" id="not_found" style="display:none">No Post Found</p>
-    {% for post in post_obj %}
-    {% if post != None %}
-    <div class="card mb-4 homecard">
-        <div class="card-body">
-            <h2 class="card-title h-size"><a href="{{ url_for('post_detail', pk=post.pk) }}">{{ post.title|replace('"',
-                "")
-                }}</a></h2>
-            <p class="card-text p-size">{{ post.content|replace('"', "")|truncate(20, True) }}</p>
-        </div>
-        <div class="card-footer text-muted p-size">
-            By
-            <a class="p-size" href="{{ url_for('user_posts', author=post.author) }}"> {{ post.author|replace('"', "")
-                }}</a>
-        </div>
-    </div>
-    {% endif %}
-    {% endfor %}
+    <div id = "posts"></div>
 
 </div>
 
@@ -46,7 +47,57 @@
     }
  }
 
+function renderPosts(order){
+   let domstring = ""
+   $.ajax({url: "/all/"+order, success:
+        function(result){
 
+            if(order==0){
+                $("#dropdownMenuButton").html("Latest");
+            }
+            else if(order==1){
+                $("#dropdownMenuButton").html("Most Popular");
+            }
+            else if(order==2){
+                $("#dropdownMenuButton").html("Oldest");
+            }else{
+                $("#dropdownMenuButton").html("Least Popular");
+            }
+
+            for (var i = 0; i < result.length; i++){
+                if (result[i]){
+                    domstring+=eachPost(result[i])
+                }
+            }
+            document.getElementById("posts").innerHTML = domstring;
+
+        }
+    });
+
+  
+
+}
+
+function eachPost(post){
+   return `<div class="card mb-4 homecard">
+        <div class="card-body">
+            <h2 class="card-title h-size"><a href="/posts/${post["pk"].replace(/["]+/g, '')}">${post["title"].replace(/["]+/g, '')}</a></h2>
+            <p class="card-text p-size">${post["content"].replace(/["]+/g, '')}</p>
+        </div>
+        <div class="card-footer text-muted p-size">
+        <div class = "row">
+            <div class = "col">Popularity: ${post["votes"].replace(/["]+/g, '')}</div>
+            <div class = "col">
+                <div class = "float-right">By<a class="p-size" href="/author/${post["author"].replace(/["]+/g, '')}"> ${post["author"].replace(/["]+/g, '')}</a></div>
+            </div>
+        </div>
+        </div>
+    </div>`
+}
+
+$( document ).ready(function() {
+    renderPosts(0)
+});
 
 </script>
 {% endblock %}
