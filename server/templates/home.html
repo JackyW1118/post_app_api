@@ -1,9 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
 <nav class="navbar nav-color sticky-top">
-    <a class="navbar-brand nav-text-color" href="#">App Title</a>
+    <span style="cursor:pointer" class="navbar-brand nav-text-color" onclick="openNav()">&#9776; </span>
+    <a class="navbar-brand nav-text-color" style="color:white;">Home</a>
     <button type="button" class="btn nav-color nav-text-color">About</button>
 </nav>
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn navItem" onclick="closeNav()">&times;</a>
+    <a href="#" class="navItem"><b>All Posts</b></a>
+    {% for cat in categories %}
+        <a href="#" class="navItem">{{ cat }}</a>
+    {% endfor %}
+</div>
+
 <div class="container-fluid">
     <table class="mb-3 mt-2" style="width:100%;">
         <th class="">
@@ -31,9 +41,9 @@
 
 
 <script>
-    function livesearch(name){
+function livesearch(name){
     $('.homecard').each(function() {
-        post_name = $(this).children().children('h2').text()
+        post_name = $(this).children().children().children().first().children().children().first().children().text()
         if(post_name.toLowerCase().includes(name.toLowerCase())){
             $(this).show();
         }else{
@@ -81,7 +91,12 @@ function renderPosts(order){
 function eachPost(post){
    return `<div class="card mb-4 homecard">
         <div class="card-body">
-            <h2 class="card-title h-size"><a href="/posts/${post["pk"].replace(/["]+/g, '')}">${post["title"].replace(/["]+/g, '')}</a></h2>
+            <table style = "width:100%">
+                <tr style = "width:100%">
+                    <th> <h2 class="card-title h-size"><a href="/posts/${post["pk"].replace(/["]+/g, '')}">${post["title"].replace(/["]+/g, '')}</a></h2></th>
+                    <th style="text-align:right;"> <span class="badge badge-success">${post["category"].replace(/["]+/g, '')}</span></th>
+                </tr>
+            </table>
             <p class="card-text p-size">${post["content"].replace(/["]+/g, '')}</p>
         </div>
         <div class="card-footer text-muted p-size">
@@ -98,6 +113,14 @@ function eachPost(post){
 $( document ).ready(function() {
     renderPosts(0)
 });
+
+function openNav() {
+  document.getElementById("mySidenav").style.width = "200px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+}
 
 </script>
 {% endblock %}

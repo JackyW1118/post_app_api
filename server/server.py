@@ -4,6 +4,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 import os
+
 app = Flask(__name__)
 CORS(app)
 app.config['JSON_SORT_KEYS'] = False

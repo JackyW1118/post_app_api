@@ -15,8 +15,16 @@
         {% if post != None %}
         <div class="card mb-4 homecard">
             <div class="card-body">
-                <h2 class="card-title h-size"><a href="{{ url_for('post_detail', pk=post.pk) }}">{{ post.title|replace('"', "") }}</a>
-                </h2>
+                <table style = "width:100%">
+                    <tr style = "width:100%">
+                        <th>
+                            <h2 class="card-title h-size"><a href="{{ url_for('post_detail', pk=post.pk) }}">{{ post.title|replace('"', "") }}</a></h2>
+                        </th>
+                        <th style="text-align:right;">
+                            <span class="badge badge-success">{{post.category|replace('"', "") }}</span>
+                        </th>
+                    </tr>
+                </table>
                 <p class="card-text p-size">{{ post.content|replace('"', "")|truncate(20, True) }}</p>
             </div>
 
