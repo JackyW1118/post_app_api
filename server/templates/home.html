@@ -2,7 +2,8 @@
 {% block content %}
 <nav class="navbar nav-color sticky-top">
     <span style="cursor:pointer" class="navbar-brand nav-text-color" onclick="openNav()">&#9776; </span>
-    <button type="button" class="btn nav-color nav-text-color">About</button>
+    <button class="btn text-center nav-text-color nav-color"><strong id="title">Metapost</strong></button>
+    <button type="button" class="btn nav-color nav-text-color"  data-toggle="modal" data-target="#exampleModal">About</button>
 </nav>
 
 <div id="mySidenav" class="sidenav">
@@ -38,6 +39,25 @@
 
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">About App</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        This app allows user to create account and post contents after different categories. User can also browse through posts made by other people.
+      </div>
+      <div class="modal-footer">
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 function livesearch(name){
@@ -101,7 +121,7 @@ function eachPost(post){
                     <th style="text-align:right;"> <span class="badge badge-success">${post["category"].replace(/["]+/g, '')}</span></th>
                 </tr>
             </table>
-            <p class="card-text p-size">${post["content"].replace(/["]+/g, '')}</p>
+            <p class="card-text p-size">${post["content"].replace(/["]+/g, '').substring(0,50)}</p>
         </div>
         <div class="card-footer text-muted p-size">
         <div class = "row">
@@ -120,6 +140,10 @@ $( document ).ready(function() {
         $(this).parent().find('a.font-weight-bold').removeClass('font-weight-bold');
         $(this).addClass('font-weight-bold');
         let ID =  $("a.font-weight-bold").attr("id")
+        $("#title").html(ID.toUpperCase())
+        if(ID=="all"){
+            $("#title").html("Metapost")
+        }
         renderPosts(0,ID)
     });
     $(".sort").on('click', function(e) {
