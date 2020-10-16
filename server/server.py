@@ -1,14 +1,15 @@
-from flask import Flask, render_template, redirect, url_for, jsonify
+from flask import Flask, render_template, redirect, url_for, jsonify, request
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 import os
+import json
 
 app = Flask(__name__)
 CORS(app)
 app.config['JSON_SORT_KEYS'] = False
-app.config['TEMPLATES_AUTO_RELOAD']=True
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 cred = credentials.Certificate({
   "type": "service_account",
@@ -28,8 +29,14 @@ firebase_admin.initialize_app(cred,{
 })
 root = db.reference()
 
-def getObject():
-    return root.get()["post_app"]["post_app"]["post"]
+def getObject(post_type=None):
+    if(post_type is None or post_type == "all"):
+        return root.get()["post_app"]["post_app"]["post"]
+    output = list()
+    pk_list = json.loads(root.child("post_app").child("post_app").child("category").child(post_type).get())
+    for key in pk_list:
+        output.append(getPostObjWithPk(key))
+    return output
 
 def getPostObjWithPk(pk):
     return root.child("post_app").child("post_app").child("post").child(str(pk)).get()
@@ -57,16 +64,16 @@ def downVotePostWithPk(pk):
         newObj["votes"] = str(currentVal-1)
     root.child("post_app").child("post_app").child("post").child(str(pk)).set(newObj)
 
-def sortPostsByVote(descend):
+def sortPostsByVote(descend,post_type):
     if descend ==0: #latest first
-        return list(reversed(getObject()))
+        return list(reversed(getObject(post_type)))
     elif descend == 1: #popular first
         descend = True
     elif descend == 2:#latest last
-        return getObject()
+        return getObject(post_type)
     else: #popular last
         descend = False
-    return sorted([x for x in getObject() if x is not None], key=lambda k: int(k['votes']),reverse=descend)
+    return sorted([x for x in getObject(post_type) if x is not None], key=lambda k: int(k['votes']),reverse=descend)
 
 def getCategoryNames():
     return list(root.child("post_app").child("post_app").child("category").get().keys())
@@ -78,7 +85,8 @@ def home_page():
 
 @app.route('/all/<order>')
 def allPosts(order=0):
-    return jsonify(sortPostsByVote(int(order)))
+    post_type = request.args.get('type')
+    return jsonify(sortPostsByVote(int(order),post_type))
 
 @app.route('/posts/<pk>')
 def post_detail(pk=None):
@@ -101,9 +109,7 @@ def user_posts(author=None):
     post_obj=[]
     for post_dict in getObject():
         if post_dict is not None and post_dict["author"].replace('"',"") == author:
-            print(post_dict["author"])
             post_obj.append(post_dict)
-    print(post_obj)
     return render_template('user_posts.html',post_obj=post_obj,author=getAuthorObjWithUsername(author))
 
 @app.route('/posts/<pk>/votes')
@@ -112,4 +118,5 @@ def getVoteWithPk(pk=None):
 
 
 if __name__ == '__main__':
-    print(sortPostsByVote(1))
+    #testing func, to run server, go to upper directory and run wsgi.py
+    print(getObject("health"))

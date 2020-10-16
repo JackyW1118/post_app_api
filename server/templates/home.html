@@ -7,9 +7,9 @@
 
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn navItem" onclick="closeNav()">&times;</a>
-    <a href="#" class="navItem"><b>All Posts</b></a>
+    <a href="#" class="navItem font-weight-bold" id = "all" onclick="renderPosts(0)">All Posts</a>
     {% for cat in categories %}
-        <a href="#" class="navItem">{{ cat }}</a>
+        <a href="#" id = "{{ cat }}" class="navItem" onclick="renderPosts(0,'{{ cat }}')">{{ cat }}</a>
     {% endfor %}
 </div>
 
@@ -21,10 +21,10 @@
                 Latest
               </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#" onclick="renderPosts(0)">Latest</a>
-                        <a class="dropdown-item" href="#" onclick="renderPosts(2)">Oldest</a>
-                        <a class="dropdown-item" href="#" onclick="renderPosts(1)">Most Popular</a>
-                        <a class="dropdown-item" href="#" onclick="renderPosts(3)">Least Popular</a>                     
+                        <a id = "0" class="dropdown-item sort" href="#">Latest</a>
+                        <a id = "2" class="dropdown-item sort" href="#">Oldest</a>
+                        <a id = "1" class="dropdown-item sort" href="#">Most Popular</a>
+                        <a id = "3" class="dropdown-item sort" href="#" >Least Popular</a>                     
                   </div>
             </div>
         </th>
@@ -56,9 +56,15 @@ function livesearch(name){
     }
  }
 
-function renderPosts(order){
+function renderPosts(order, type=null){  
    let domstring = ""
-   $.ajax({url: "/all/"+order, success:
+   let Url =  "/all/"+order
+   if(type){
+      Url += "?type="+type
+   }
+
+   closeNav();
+   $.ajax({url: Url, success:
         function(result){
 
             if(order==0){
@@ -79,7 +85,6 @@ function renderPosts(order){
                 }
             }
             document.getElementById("posts").innerHTML = domstring;
-
         }
     });
 
@@ -111,6 +116,18 @@ function eachPost(post){
 
 $( document ).ready(function() {
     renderPosts(0)
+    $("#mySidenav").on('click', 'a', function(e) {
+        $(this).parent().find('a.font-weight-bold').removeClass('font-weight-bold');
+        $(this).addClass('font-weight-bold');
+        let ID =  $("a.font-weight-bold").attr("id")
+        renderPosts(0,ID)
+    });
+    $(".sort").on('click', function(e) {
+        let ID =  $("a.font-weight-bold").attr("id")
+        console.log(ID)
+        let sort = parseInt($(this).attr("id"))
+        renderPosts(sort,ID)
+    });
 });
 
 function openNav() {
