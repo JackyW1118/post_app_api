@@ -44,7 +44,7 @@ def getPostObjWithPk(pk):
 def getAuthorObjWithUsername(username):
     return root.child("post_app").child("post_app").child("users").child(str(username)).get()
 
-def upVotePostWithPk(pk):
+def upVotePostWithPk(pk,author):
     currentVal =  int(root.child("post_app").child("post_app").child("post").child(str(pk)).child("votes").get())
     newObj = getPostObjWithPk(pk)
 
@@ -53,8 +53,18 @@ def upVotePostWithPk(pk):
     else:
         newObj["votes"] = str(currentVal+1)
     root.child("post_app").child("post_app").child("post").child(str(pk)).set(newObj)
+    userobj = root.child("post_app").child("post_app").child("users").child(str(author)).get()
+    voted = root.child("post_app").child("post_app").child("users").child(str(author)).child("votes").get()
+    pk=int(pk)
+    if(not voted):
+        userobj["votes"] = str([pk])
+    else:
+        voted = json.loads(voted)
+        voted.append(pk)
+        userobj["votes"] = str(voted)
+    root.child("post_app").child("post_app").child("users").child(str(author)).set(userobj)
 
-def downVotePostWithPk(pk):
+def downVotePostWithPk(pk,author):
     currentVal =  int(root.child("post_app").child("post_app").child("post").child(str(pk)).child("votes").get())
     newObj = getPostObjWithPk(pk)
 
@@ -63,6 +73,16 @@ def downVotePostWithPk(pk):
     else:
         newObj["votes"] = str(currentVal-1)
     root.child("post_app").child("post_app").child("post").child(str(pk)).set(newObj)
+    userobj = root.child("post_app").child("post_app").child("users").child(str(author)).get()
+    voted = root.child("post_app").child("post_app").child("users").child(str(author)).child("votes").get()
+    pk=int(pk)
+    if (not voted):
+        userobj["votes"] = str([pk])
+    else:
+        voted = json.loads(voted)
+        voted.append(pk)
+        userobj["votes"] = str(voted)
+    root.child("post_app").child("post_app").child("users").child(str(author)).set(userobj)
 
 def sortPostsByVote(descend,post_type):
     if descend ==0: #latest first
@@ -74,6 +94,14 @@ def sortPostsByVote(descend,post_type):
     else: #popular last
         descend = False
     return sorted([x for x in getObject(post_type) if x is not None], key=lambda k: int(k['votes']),reverse=descend)
+
+def ifVoted(pk,author):
+    voted = root.child("post_app").child("post_app").child("users").child(str(author)).child("votes").get()
+    if(not voted):
+        return False
+    print(type(voted))
+    voted = json.loads(voted)
+    return pk in voted
 
 def getCategoryNames():
     return list(root.child("post_app").child("post_app").child("category").get().keys())
@@ -93,15 +121,19 @@ def post_detail(pk=None):
     data = getPostObjWithPk(pk)
     return render_template('post_detail.html', post_obj=data)
 
-@app.route('/posts/<pk>/upvote')
-def upvote_post(pk=None):
-    upVotePostWithPk(pk)
-    return "done"
+@app.route('/posts/<pk>/upvote/<voter>')
+def upvote_post(pk=None, voter = None):
+    if(ifVoted(int(pk),voter)==False):
+        upVotePostWithPk(pk,author=voter)
+        return "true"
+    return "false"
 
-@app.route('/posts/<pk>/downvote')
-def downvote(pk=None):
-    downVotePostWithPk(pk)
-    return "done"
+@app.route('/posts/<pk>/downvote/<voter>')
+def downvote_post(pk=None, voter=None):
+    if(ifVoted(int(pk),voter)==False):
+        downVotePostWithPk(pk,author=voter)
+        return "true"
+    return "false"
 
 @app.route('/author/<author>')
 def user_posts(author=None):
@@ -119,4 +151,5 @@ def getVoteWithPk(pk=None):
 
 if __name__ == '__main__':
     #testing func, to run server, go to upper directory and run wsgi.py
-    print(getObject("health"))
+    #print(downVotePostWithPk(pk='5',author="jackyw118"))
+    print(ifVoted(5,"jackyw118"))

@@ -37,37 +37,26 @@
 </div>
 <script>
   function upVote(){
-
+       var voter = window.AppInventor.getWebViewString();
        var pk = "{{ post_obj.pk }}"
-       $.ajax({url: "/posts/"+ pk +"/upvote", success:
+       $.ajax({url: "/posts/"+ pk +"/upvote/"+voter, success:
             function (result) {
                 getVote()
-                var stored = JSON.parse(localStorage.getItem("voted") || "null")
-                if(!stored){
-                    localStorage.setItem("voted",JSON.stringify([pk]))
-                }else{
-                    stored.push(pk)
-                    localStorage.setItem("voted",JSON.stringify(stored))
+                if(result=="false"){
+                    alert("You already voted!")
                 }
-                console.log(localStorage.getItem("voted"))
          }
       });
    }
    function downVote(){
-
+        var voter = window.AppInventor.getWebViewString();
         var pk = "{{ post_obj.pk }}"
-        $.ajax({url: "/posts/"+ pk +"/downvote",success:
+        $.ajax({url: "/posts/"+ pk +"/downvote/"+voter,success:
             function (result) {
                 getVote()
-                var stored = JSON.parse(localStorage.getItem("voted") || "null")
-
-                if(!stored){
-                    localStorage.setItem("voted",JSON.stringify([pk]))
-                }else{
-                    stored.push(pk)
-                    localStorage.setItem("voted",JSON.stringify(stored))
+                if(result=="false"){
+                    alert("You already voted!")
                 }
-                console.log(localStorage.getItem("voted"))
             }
         });
    }
@@ -94,8 +83,6 @@
         return false;
    }
    $(document).ready(function(){
-       var appInventorInput = window.AppInventor.getWebViewString();
-       alert(appInventorInput);
        getVote()
     });
 </script>

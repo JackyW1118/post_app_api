@@ -2,7 +2,7 @@
 {% block content %}
 <nav class="navbar nav-color sticky-top">
     <span style="cursor:pointer" class="navbar-brand nav-text-color" onclick="openNav()">&#9776; </span>
-    <button class="btn text-center nav-text-color nav-color"><strong id="title">Metapost</strong></button>
+    <button class="btn text-center nav-text-color nav-color"><strong id="title"></strong></button>
     <button type="button" class="btn nav-color nav-text-color"  data-toggle="modal" data-target="#exampleModal">About</button>
 </nav>
 
@@ -142,7 +142,7 @@ $( document ).ready(function() {
         let ID =  $("a.font-weight-bold").attr("id")
         $("#title").html(ID.toUpperCase())
         if(ID=="all"){
-            $("#title").html("Metapost")
+            $("#title").html("")
         }
         renderPosts(0,ID)
     });
