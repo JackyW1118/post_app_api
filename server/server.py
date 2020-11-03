@@ -14,7 +14,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 cred = credentials.Certificate()
 
 firebase_admin.initialize_app(cred,{
-    'databaseURL': 'https://postapp-48b9d.firebaseio.com/'
+    'databaseURL': ''
 })
 root = db.reference()
 
